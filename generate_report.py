@@ -6,9 +6,9 @@ TEX_FILE = os.path.join(REPORT_DIR, "Cooper_Morgan_Lab3.tex")
 PDF_FILE = os.path.join(REPORT_DIR, "Cooper_Morgan_Lab3.pdf")
 
 # --- IMAGE PATHS (update these to point to your saved plot files) ---
-FIGURE_1 = "figures/PLACEHOLDER.png"
-FIGURE_2 = "figures/PLACEHOLDER.png"
-FIGURE_3 = "figures/PLACEHOLDER.png"
+FIGURE_1 = "figures/value_function_3d.png"
+FIGURE_2 = "figures/learned_policy.png"
+FIGURE_3 = "figures/epsilon_comparison_all.png"
 
 tex_content = r"""
 \documentclass[12pt]{article}
@@ -100,28 +100,26 @@ GitHub Repository: https://github.com/cooper-rm/monte-carlo-methods
 
 [PLACEHOLDER: Write your key results and analysis here]
 
-% Uncomment and update figures as you generate them:
-%
-% \begin{figure}[H]
-% \centering
-% \includegraphics[width=0.85\textwidth]{""" + FIGURE_1 + r"""}
-% \caption{[PLACEHOLDER: Interpretive caption for figure 1]}
-% \label{fig:figure1}
-% \end{figure}
-%
-% \begin{figure}[H]
-% \centering
-% \includegraphics[width=0.85\textwidth]{""" + FIGURE_2 + r"""}
-% \caption{[PLACEHOLDER: Interpretive caption for figure 2]}
-% \label{fig:figure2}
-% \end{figure}
-%
-% \begin{figure}[H]
-% \centering
-% \includegraphics[width=0.85\textwidth]{""" + FIGURE_3 + r"""}
-% \caption{[PLACEHOLDER: Interpretive caption for figure 3]}
-% \label{fig:figure3}
-% \end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{""" + FIGURE_1 + r"""}
+\caption{[PLACEHOLDER: Interpretive caption for figure 1]}
+\label{fig:figure1}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{""" + FIGURE_2 + r"""}
+\caption{[PLACEHOLDER: Interpretive caption for figure 2]}
+\label{fig:figure2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{""" + FIGURE_3 + r"""}
+\caption{[PLACEHOLDER: Interpretive caption for figure 3]}
+\label{fig:figure3}
+\end{figure}
 
 
 \section{Section 3: AI Use Reflection}
