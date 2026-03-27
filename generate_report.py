@@ -33,28 +33,40 @@ tex_content = r"""
 
 \section{Section 1: Project Overview}
 
-% 400-500 words
-% Required content:
-%   - Problem/Question: What RL problem are you investigating?
-%   - Core Concepts: What RL concepts from Sutton & Barto (Chapter 5) are you exploring?
-%   - Theoretical Grounding: How does this connect to theory from the readings?
-%   - Environment Description:
-%       - State space (discrete/continuous, dimensions)
-%       - Action space (discrete/continuous, number of actions)
-%       - Reward structure
-%       - Episode termination conditions
-%   - Expected Behavior: What do you hypothesize will happen and why?
-%
-% This is NOT a code walkthrough, methods section, or summary of results.
-% Purpose: Demonstrate conceptual understanding before diving into implementation.
-%
-% Environment: Gymnasium's Blackjack-v1
-% Topics: MC prediction, MC control with exploring starts, on-policy MC control
-%         (epsilon-soft policies), off-policy learning and importance sampling,
-%         episode-based learning, first-visit vs every-visit MC methods
-% Reading: Sutton & Barto Chapter 5 (Monte Carlo Methods)
 
-[PLACEHOLDER: Write your project overview here]
+This lab builds upon earlier concepts like Markov Decision Processes (MDP) and Dynamic 
+Programming (DP) by introducing Monte Carlo Simulations. Specifically, this lab uses 
+Monte Carlo (MC) and Reinforcement Learning (RL) to learn to play blackjack. This is 
+done by letting an agent play blackjack hands hundreds of thousands of times without 
+knowning any rules, just observing the outcomes. MC RL follows a model-free approach, 
+since the agent has zero initial knowledge of card probabilities, or dealer behavior. 
+This contrasts well with DP since DP requires a complete model of the environment. This 
+lab investigates the first-visit MC control with differeing epsilon policies. 
+
+MC methods fit value functions by estimating full rewards at the end of each episode, but only uses 
+the first occurence of each state-action pair per episode, ensuring return samples are independent 
+and unbiased (Sutton & Barto, 2020). To balance exploration and exploitation RL with MC uses
+an epsilon greedy policy, which results in a a high chance of non-greedy actions at the beginning
+of training and decays to a very small chance of non-greedy actions late in training. This ensures 
+the agent has explored all actions sufficiently to determine an optimal policy. This lab also uses 
+on-policy MC control meaning the same epsilon-greedy policy that generates episodes is also the
+policy being improved.
+
+The environment used in the lab follows:
+
+\textbf{Blackjack-v1 (Gymnasium):}
+\begin{itemize}
+  \item State space: discrete 3-tuple (player sum 4--21, dealer showing card 1--10, usable ace True/False) --- approximately 400 unique states
+  \item Action space: 2 discrete actions --- hit (draw a card) or stick (stop drawing)
+  \item Rewards: $+1$ for winning, $-1$ for losing, $0$ for a draw --- only awarded at the end of each hand
+  \item Terminal conditions: player busts (exceeds 21), player sticks, or player receives a natural blackjack
+  \item Uses Sutton \& Barto rules: infinite deck, natural blackjack only counts without hitting
+\end{itemize}
+
+I expect the agent to sucessfully learn an optimal blackjack policy, but only if its given enough training time. 
+Since I am familiar with Blackjack I am expecting the agent to learn quickly to stick when the value of the hand is 
+high, and hit when it is low. In blackjack, if the player busts first the dealer doesnt have to reveal their cards, 
+even if they too would have busted the player looses. Therfore, I dont expect win rate to get higher than 45%. 
 
 
 \section{Section 2: Deliverables}
