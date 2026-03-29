@@ -8,7 +8,10 @@ PDF_FILE = os.path.join(REPORT_DIR, "Cooper_Morgan_Lab3.pdf")
 # --- IMAGE PATHS (update these to point to your saved plot files) ---
 FIGURE_1 = "figures/value_function_3d.png"
 FIGURE_2 = "figures/learned_policy.png"
-FIGURE_3 = "figures/epsilon_comparison_all.png"
+FIGURE_3 = "figures/basic_strategy.png"
+FIGURE_3B_LEARNED = "figures/learned_policy_1_5M.png"
+FIGURE_3B_BASIC = "figures/basic_strategy_1_5M.png"
+FIGURE_4 = "figures/epsilon_comparison_all.png"
 
 tex_content = r"""
 \documentclass[12pt]{article}
@@ -30,6 +33,7 @@ tex_content = r"""
 
 \begin{document}
 \maketitle
+\newpage
 
 \section{Section 1: Project Overview}
 
@@ -56,7 +60,8 @@ The environment used in the lab follows:
 
 \textbf{Blackjack-v1 (Gymnasium):}
 \begin{itemize}
-  \item State space: discrete 3-tuple (player sum 4--21, dealer showing card 1--10, usable ace True/False) --- approximately 400 unique states
+  \item State space: discrete 3-tuple (player sum 4--21, dealer showing card 1--10, usable ace True/False) \
+      --- approximately 400 unique states
   \item Action space: 2 discrete actions --- hit (draw a card) or stick (stop drawing)
   \item Rewards: $+1$ for winning, $-1$ for losing, $0$ for a draw --- only awarded at the end of each hand
   \item Terminal conditions: player busts (exceeds 21), player sticks, or player receives a natural blackjack
@@ -69,6 +74,7 @@ high, and hit when it is low. In blackjack, if the player busts first the dealer
 even if they too would have busted the player looses. Therfore, I dont expect win rate to get higher than 45%. 
 
 
+\newpage
 \section{Section 2: Deliverables}
 
 \subsection{GitHub Repository}
@@ -78,60 +84,95 @@ GitHub Repository: https://github.com/cooper-rm/monte-carlo-methods
 
 \subsection{Implementation Summary}
 
-% 100-150 words
-% What you implemented (algorithms, environments)
-% Experimental setup (e.g., "500,000 episodes, epsilon values, decay schedules")
-% Key hyperparameters chosen
-% NOT detailed pseudocode or line-by-line methods
-%
-% Lab assignment: First-visit MC control for Blackjack-v1 using on-policy
-% MC control with epsilon-soft policies. Train for at least 500,000 episodes.
-% Experiment with different epsilon values and decay schedules.
-
-[PLACEHOLDER: Write your implementation summary here]
+I implemented first-visit MC control with epsilon-greedy policies using Gymnasium's
+Blackjack-v1 environment. The primary training ran 500,000 episodes with $\epsilon=0.1$
+and $\gamma=1.0$. The MC RL agent updated the values in a Q-table as it learned, utilizing
+incremental averaging. I also ran experiments with ranging epsilon values (0.01, 0.1, 0.3)
+and differing decay schedule algorithms (linear and exponential, both 0.3 to 0.01).
+Beyond this, I decided to run extended episodes to see if slower trainng made a substantial
+difference. These can be seen in Figures~\ref{fig:figure1}--\ref{fig:figure4}.
 
 
 \subsection{Key Results \& Analysis}
 
-% 400-600 words + 2-4 visualizations
-% CRITICAL RULES: NO raw code listings in PDF, NO console output dumps
-% Include 2-4 key visualizations (PNG/JPG) with detailed interpretive captions
-% Discussion must address:
-%   - What do results show about algorithm behavior?
-%   - How do they relate to theory from Sutton & Barto? (cite chapters/sections)
-%   - What didn't work as expected? Why?
-%   - How did hyperparameters affect performance?
-%   - What does this teach you about the RL concept?
-%
-% Expected visualizations:
-%   - 3D surface plots of learned value function (player sum vs dealer showing card)
-%     for both usable and non-usable ace cases (Matplotlib mplot3d)
-%   - Comparison of learned policies with basic Blackjack strategy
-%   - Learning curves showing average returns over episodes (with smoothing)
-%   - Results from different epsilon values and decay schedules
 
-[PLACEHOLDER: Write your key results and analysis here]
+After training for 500,000 episodes, I collected and visualized the state value
+function $V(s) = \max_a Q(s,a)$ for each state across the usable and
+non-usable ace scenarios and compared it to the baseline decision for playing
+blackjack. There are two plot types, one for usable ace scenarios and one without.
+When we compare the chances of winning when the agent has a usable ace versus a 
+non-usable ace, it appears that the chance of winning is higher overall when a 
+usable ace exists. Both visuals present a cliff pattern where the chances of the 
+player winning are substantially higher and increase rapidly as the agent's hand 
+moves from 17 to 21. Below 17, the chance of winning is at or below zero in both 
+scenarios.
+
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{""" + FIGURE_1 + r"""}
-\caption{[PLACEHOLDER: Interpretive caption for figure 1]}
+\caption{3D surface plots of the learned state value function V(s) after 500,000 
+    episodes of first-visit MC control. Left: states with a usable ace. Right: states 
+    without a usable ace. The high plateau at player sum 20--21 reflects near-certain wins, 
+    while the valley when the dealer shows 9--10 reflects the dealer's strength.}
 \label{fig:figure1}
 \end{figure}
+
+
+Figures 2 and 3 show the learned policy compared against the baseline strategy for both usable ace and non-usable ace.
+Figure 2 shows the learned policy after 500k training steps and Figure 3 shows the learned policy
+after 1.5 million episodes. While the agent learns a good policy after only 500k steps,
+it is easy to see that the states that are likely not visited often are different between the baseline and the
+learned policy. However, after 1.5 million training steps the agent is nearly perfect.
+This exemplifies the tradeoff between longer training and accuracy, as there is a diminishing return to training as
+it gets longer.
+
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{""" + FIGURE_2 + r"""}
-\caption{[PLACEHOLDER: Interpretive caption for figure 2]}
+\vspace{0.3cm}
+\includegraphics[width=0.85\textwidth]{""" + FIGURE_3 + r"""}
+\caption{Top: Learned policy heatmaps after 500,000 episodes of first-visit MC control.
+    Bottom: Basic Blackjack strategy reference. In both rows, left is usable ace and right
+    is no usable ace. Green cells indicate stick (S), red cells indicate hit (H). The learned
+    policy closely matches established basic strategy, with minor differences in borderline
+    states such as soft 18 against strong dealer cards.}
 \label{fig:figure2}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.85\textwidth]{""" + FIGURE_3 + r"""}
-\caption{[PLACEHOLDER: Interpretive caption for figure 3]}
+\includegraphics[width=0.85\textwidth]{""" + FIGURE_3B_LEARNED + r"""}
+\vspace{0.3cm}
+\includegraphics[width=0.85\textwidth]{""" + FIGURE_3B_BASIC + r"""}
+\caption{Top: Learned policy after 1,500,000 episodes with linear epsilon decay (0.3 to 0.01).
+    Bottom: Basic Blackjack strategy reference. Green cells indicate stick (S), red cells
+    indicate hit (H). The learned policy closely matches established basic strategy, with
+    minor differences in borderline states such as soft 18 against strong dealer cards.}
 \label{fig:figure3}
 \end{figure}
+
+
+Multiple experiments were run comparing different epsilon values (0.01, 0.1, 0.3),
+decay schedules (linear, exponential), and episode lengths. Initially, all configurations
+were run for 500k episodes and then the best were rerun for 1.5 million episodes. From
+these experiments, we saw exponential decay have the highest win rate early on, but linear decay
+eventually surpassed it, just slightly. The constant $\epsilon=0.3$ stays the lowest because
+too much random play prevents exploitation of optimal actions. The 1.5 million episode runs made mild improvements
+and were roughly the same as the best 500k run, but ended up fitting much closer to the baseline policy.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{""" + FIGURE_4 + r"""}
+\caption{Learning curves comparing constant epsilon values and decay schedules. All curves show
+rolling 10,000-episode average returns. Decay schedules outperform constant epsilon by combining
+early exploration with late exploitation. Extended 1M-episode runs reach similar performance to
+the best 500k schedules, suggesting diminishing returns to additional training.}
+\label{fig:figure4}
+\end{figure}
+
 
 
 \section{Section 3: AI Use Reflection}
