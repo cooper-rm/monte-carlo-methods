@@ -35,8 +35,8 @@ tex_content = r"""
 \maketitle
 \newpage
 
-\section{Section 1: Project Overview}
 
+\section{Section 1: Project Overview}
 
 This lab builds upon earlier concepts like Markov Decision Processes (MDP) and Dynamic 
 Programming (DP) by introducing Monte Carlo Simulations. Specifically, this lab uses 
@@ -95,7 +95,6 @@ difference. These can be seen in Figures~\ref{fig:figure1}--\ref{fig:figure4}.
 
 \subsection{Key Results \& Analysis}
 
-
 After training for 500,000 episodes, I collected and visualized the state value
 function $V(s) = \max_a Q(s,a)$ for each state across the usable and
 non-usable ace scenarios and compared it to the baseline decision for playing
@@ -107,7 +106,6 @@ player winning are substantially higher and increase rapidly as the agent's hand
 moves from 17 to 21. Below 17, the chance of winning is at or below zero in both 
 scenarios.
 
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{""" + FIGURE_1 + r"""}
@@ -118,7 +116,6 @@ scenarios.
 \label{fig:figure1}
 \end{figure}
 
-
 Figures 2 and 3 show the learned policy compared against the baseline strategy for both usable ace and non-usable ace.
 Figure 2 shows the learned policy after 500k training steps and Figure 3 shows the learned policy
 after 1.5 million episodes. While the agent learns a good policy after only 500k steps,
@@ -126,7 +123,6 @@ it is easy to see that the states that are likely not visited often are differen
 learned policy. However, after 1.5 million training steps the agent is nearly perfect.
 This exemplifies the tradeoff between longer training and accuracy, as there is a diminishing return to training as
 it gets longer.
-
 
 \begin{figure}[H]
 \centering
@@ -153,7 +149,6 @@ it gets longer.
 \label{fig:figure3}
 \end{figure}
 
-
 Multiple experiments were run comparing different epsilon values (0.01, 0.1, 0.3),
 decay schedules (linear, exponential), and episode lengths. Initially, all configurations
 were run for 500k episodes and then the best were rerun for 1.5 million episodes. From
@@ -162,71 +157,80 @@ eventually surpassed it, just slightly. The constant $\epsilon=0.3$ stays the lo
 too much random play prevents exploitation of optimal actions. The 1.5 million episode runs made mild improvements
 and were roughly the same as the best 500k run, but ended up fitting much closer to the baseline policy.
 
-
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{""" + FIGURE_4 + r"""}
 \caption{Learning curves comparing constant epsilon values and decay schedules. All curves show
 rolling 10,000-episode average returns. Decay schedules outperform constant epsilon by combining
-early exploration with late exploitation. Extended 1M-episode runs reach similar performance to
+early exploration with late exploitation. Extended 1.5M-episode runs reach similar performance to
 the best 500k schedules, suggesting diminishing returns to additional training.}
 \label{fig:figure4}
 \end{figure}
 
 
-
 \section{Section 3: AI Use Reflection}
-
-% 250-350 words total
 
 \subsection{Initial Interaction}
 
-% 50-75 words
-% What did you ask the AI to help you with?
-% What was your initial prompt?
-% What code/explanation did it provide?
-
-[PLACEHOLDER: Write your initial interaction here]
-
+I find more and more each week that Claude is pretty good at getting things right the first time.
+I am unsure if this is because of improvements to Claude or improvements to the way I converse
+with it. Before I even started working in Claude, I opened a discussion with ChatGPT to help me learn
+the materials better. After that, I worked with Claude Code in a Jupyter notebook to develop
+a scaffolding for the project with markdown cells based on the directions. Once we began working on
+the code, I had Claude go through each line and explain the what and why of the codebase.
 
 \subsection{Iteration Cycle}
 
-% 150-200 words --- MOST IMPORTANT
-% Describe at least 2-3 concrete debugging cycles with:
-%   - The error/problem you encountered
-%   - Your follow-up prompt to AI
-%   - AI's response
-%   - Whether it worked or needed more iteration
+\textbf{Iteration 1: Understanding Backward Return Computation}
 
-\textbf{Iteration 1: [PLACEHOLDER: Title]}
+After Claude implemented the Monte Carlo control training loop, I found myself a little confused
+on exactly how it worked, so I asked Claude to explain each line and discuss a clear example.
+Claude traced through a specific trajectory showing me how $G = reward + \gamma \cdot G$ propagates backward.
+This clarified a key insight: step 0's immediate reward was 0, but $G=1.0$ because the backward
+pass propagates the future win to the decision that resulted in it. After grasping exactly how
+it works, I learned that we use backward-propagating reward to avoid the recursive and
+computationally expensive requirements of propagating reward using a forward pass.
 
-[PLACEHOLDER: Describe the first debugging cycle]
+\textbf{Iteration 2: Wrong Cell Type for Part 8}
 
-\textbf{Iteration 2: [PLACEHOLDER: Title]}
+When working through Part 8, which saves figures to be used in this report, Claude made the
+mistake of writing code to a markdown cell instead of a Python cell. This was a simple error
+that I caught right away, so I reverted the changes and reprompted Claude to try again in the
+next cell after the markdown cell. This was a simple mistake, so it only required a single intervention.
 
-[PLACEHOLDER: Describe the second debugging cycle]
+\textbf{Iteration 3: Experimenting with Epsilon Schedules}
 
-\textbf{Iteration 3: [PLACEHOLDER: Title]}
-
-[PLACEHOLDER: Describe the third debugging cycle]
+At first, I implemented experiments with 500k episode lengths. Since it appeared that
+the percentage of success for some configurations was still trending up, I wanted to
+see what would happen if I experimented further with 1 million episodes on the linear
+decay and a more aggressive $0.5 \to 0.001$ schedule. After seeing the results, I observed
+that the extra steps appeared to be a waste and the result was about the same. I then looked
+further at the baseline policy vs.\ the learned policy and realized the 500k steps were still
+not perfect. I ran the experiment again with 1.5 million steps, and visually the run
+appeared to be about the same outcome. However, when looking at the policy via the red
+and green grid and comparing it to the baseline, it was much closer than the 500k steps.
+This led to a clear understanding that there is a diminishing return on longer training,
+but longer training will get you closer to the end goal since it involves experimenting
+more with rare scenarios.
 
 \subsection{Critical Evaluation}
 
-% 50-75 words
-% Did you catch any mistakes the AI made?
-% Did you test alternative approaches?
-% How did you verify the final solution was correct?
-
-[PLACEHOLDER: Write your critical evaluation here]
+Overall, Claude did a good job helping to complete this lab, since it only made one big error
+of writing to the wrong cell type. What was most helpful was first setting up an interview-style
+learning process via ChatGPT initially, then working through each step one at a time with Claude
+Code. At each step, I was able to work through the code line by line and understand the concepts
+at a high level. While I could have easily implemented the code without Claude's help, this process
+allowed me to focus on concepts more than syntax.
 
 \subsection{Learning Reflection}
 
-% 50-75 words
-% What did you learn about the RL algorithm through debugging?
-% What did you learn about working with AI tools?
-% What would you do differently next time?
-
-[PLACEHOLDER: Write your learning reflection here]
+What was most helpful throughout this process was looking at the policy heatmaps against the known
+basic Blackjack strategy. Understanding exactly what the policy looked like and continuing to
+experiment with longer training demonstrated the Pareto distribution (80/20) cleanly. Most of the
+results came from early in the training, but fine-tuning took a lot more effort. Through this process,
+it was easy to see that Monte Carlo is viable in environments where there is no known model. It also
+made clear a new way of thinking when working with back-propagating values vs.\ forward-propagating
+values, since in unknown model environments it is a lot more computationally feasible.
 
 \section{Section 4: Speaker Notes}
 
