@@ -234,23 +234,14 @@ values, since in unknown model environments it is a lot more computationally fea
 
 \section{Section 4: Speaker Notes}
 
-% ~5 minutes / 5-7 bullets
-% Covering:
-%   - Problem statement and motivation
-%   - Method and key algorithmic choices
-%   - Important design decision or challenge you faced
-%   - Main result or finding
-%   - Key insight or learning
-%   - (Optional) Connection to future weeks or real-world applications
-
 \begin{itemize}
-  \item \textbf{Problem:} [PLACEHOLDER]
-  \item \textbf{Method:} [PLACEHOLDER]
-  \item \textbf{Design choice:} [PLACEHOLDER]
-  \item \textbf{Key result:} [PLACEHOLDER]
-  \item \textbf{Insight:} [PLACEHOLDER]
-  \item \textbf{Challenge:} [PLACEHOLDER]
-  \item \textbf{Connection:} [PLACEHOLDER]
+  \item \textbf{Problem:} Can we successfully train an RL agent to learn Blackjack with no rules?
+  \item \textbf{Method:} We use first-visit Monte Carlo control with a linearly decaying epsilon-greedy policy.
+  \item \textbf{Design choice:} We test multiple different epsilon values to optimize the agent's ability to learn.
+  \item \textbf{Key result:} After 500k steps the agent learns to play, and after 1.5 million the agent's decisions are near optimal.
+  \item \textbf{Insight:} How you schedule epsilon matters more than how many episodes you run.
+  \item \textbf{Challenge:} The most difficult challenge in RL is monitoring exploration vs.\ exploitation and optimizing for the relationship.
+  \item \textbf{Connection:} Monte Carlo, which functions without a known model, bridges the gap from Dynamic Programming, which requires a known model.
 \end{itemize}
 
 \section{References}
@@ -258,7 +249,7 @@ values, since in unknown model environments it is a lot more computationally fea
 \begin{enumerate}
   \item Sutton, R. S., \& Barto, A. G. (2018). \textit{Reinforcement learning: An introduction} (2nd ed.). MIT Press.
   \item Anthropic. (2025). Claude Code [Large language model CLI tool]. \texttt{https://claude.ai}
-  \item OpenAI. (2025). ChatGPT (GPT-4o) [Large language model]. \texttt{https://chat.openai.com}
+  \item OpenAI. (2025). ChatGPT [Large language model]. \texttt{https://chat.openai.com}
 \end{enumerate}
 
 \end{document}
